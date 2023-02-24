@@ -4,7 +4,11 @@ const {check, sanitizeBody } = require('express-validator');
 const { body } = require('express-validator');
 const { usuariosGet, usuariosPut, usuariosPost, usuariosDelete, usuariosPatch } = require('../controllers/usuarios');
 const { esRolValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
-const { validarCampos } = require('../middlewares/validar-campos');
+// const { validarCampos } = require('../middlewares/validar-campos');
+// const { validarJWT } = require('../middlewares/validar-jwt');
+// const { esAdminRole, tieneRol } = require('../middlewares/validar-roles');
+
+const {validarCampos, validarJWT, esAdminRole, tieneRol} = require('../middlewares');
 const router = Router();
 
 
@@ -27,6 +31,9 @@ router.put('/:id', [
  ] ,usuariosPost);
 
 router.delete('/:id', [
+   validarJWT,
+   //esAdminRole,
+   tieneRol('ADMIN_ROLE','VENTAS_ROLE'),
    check('id').custom( existeUsuarioPorId ), // Aquí se realizan las dos validaciones
    validarCampos
 ], usuariosDelete);
